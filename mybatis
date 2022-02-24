@@ -1,1 +1,33 @@
-test
+mybatis
+1.#{}和${}的区别是什么？
+  #{}是参数占位符，执行的时候是通过prepastatement的setvalue方法，对入参进行处理，遇到特殊字符会添加\进行转义，以防止sql注入问题。
+  ${}是变量占位符，单纯属于字符串替换。
+  用法区别：
+  select * from user where name = #{name}; 
+  select * from user where name = '${name}'; 
+  ${}必须加引号
+2.mybatis是半自动orm框架，和hibernate的全自动框架区别在哪？
+  //jdbc连接部分框架封装，但是具体请求sql部分需要自己编码
+  hibernate对象关系映射，请求时直接根据对象模型获取数据，数据库无关性好。
+3.mybatis优缺点
+  jdbc连接已经封装好了，减少用于连接的代码。
+  自己编写sql，并且支持动态sql，十分灵活。
+  兼容性好（只要jdbc支持的数据库，mybatis都支持）。
+  移植性差，换了数据库sql全部需要修改。
+4.dao接口原理
+  本身就是接口，直接就可以使用JDK动态代理（jdk动态代理只能对实现了接口的类进行代理，CGLIB则是对类生成一个子类），
+  代理对象proxy会拦截接口方法，转而执行MappedStatement所代表的sql，然后将sql执行结果返回。
+  *xml文件中每一个<select>、<insert>、<update>、<delete>标签，都会被解析为一个MappedStatement对象。
+5.延迟加载的原理
+  通过CGLIB动态代理创建对象的代理对象，如调用a.getb()的时候进入invoke()发现对象是空，那么就会单独发送事先保存好的查询关联B对象的sql，把B查询上来，然后调用a.setB(b)，于是a的对象b属性就有值了。
+  这就是基本的延迟加载原理。
+6.mybatis的执行器Executor
+  baseExecutor接口
+    
+  simpleExecutor类（继承baseExecutor）
+  
+  batchExecutor类（继承baseExecutor）
+  
+  reuseExecutor类（继承baseExecutor）
+  
+  
