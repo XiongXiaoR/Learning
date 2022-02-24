@@ -1,1 +1,64 @@
-
+1.作用
+  向一个已有的类添加新的功能，并且不改变原有的类的结构，属于现有类的一个包装。
+2.基本模式
+  接口Base：
+    基础接口。
+  类A：
+    实现Base接口并实现了接口中的方法。
+  类B：
+    实现Base接口并实现了接口中的方法。
+  装饰类DecoratorBase：
+    内部维护一个实现了Base接口的对象。
+    实现Base接口并实现了接口中的方法。
+    可以在装饰类的实现方法中进行新功能的添加。
+3.示例
+  //base接口
+  interface Shape {
+    void draw();
+  }
+  
+  //A类
+  class Circle implements Shape {
+    @Override
+    public void draw() {
+        System.out.println("draw a circle");
+    }
+  }
+  
+  //B类
+  class Rectangle implements Shape {
+    @Override
+    public void draw() {
+        System.out.println("draw a rectangle");
+    }
+  }
+  
+  //装饰类DecoratorBase
+  class ShapeDecorator implements Shape {
+    protected Shape decoratedShape;//内部维护的实现了Base接口的对象
+    public ShapeDecorator(Shape decoratedShape){
+        this.decoratedShape = decoratedShape;
+    }
+    @Override
+    public void draw(){
+        decoratedShape.draw();
+        System.out.println("shape has benn decorated");//可以在装饰类的实现方法中进行新功能的添加
+    }
+  }
+  
+  //调用
+  Circle c = new Circle();
+  Rectangle r = new Rectangle();
+  ShapeDecorator s1 = new ShapeDecorator(c);
+  ShapeDecorator s2 = new ShapeDecorator(r);
+  s1.draw();
+  s2.draw();
+  
+  //输出
+  draw a circle
+  shape has benn decorated
+  draw a rectangle
+  shape has benn decorated
+  
+4.关联
+  Mybatis的二级缓存CachingExecutor就是用到了装饰器模式，装饰了BaseExecutor。
