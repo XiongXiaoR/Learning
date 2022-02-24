@@ -22,12 +22,26 @@ mybatis
   通过CGLIB动态代理创建对象的代理对象，如调用a.getb()的时候进入invoke()发现对象是空，那么就会单独发送事先保存好的查询关联B对象的sql，把B查询上来，然后调用a.setB(b)，于是a的对象b属性就有值了。
   这就是基本的延迟加载原理。
 6.mybatis的执行器Executor
-  baseExecutor接口
-    
+  baseExecutor基类
+    处理一级缓存（一级缓存存在于baseExecutor中），当执行查询方法时先去一级缓存中查找是否有数据，有的话直接返回，没有的话调用子类的查询方法去数据库中查询。
+    当调用update方法时回清除一级缓存，并且调用子类的方法。
+    调用commit/rollback清空一级缓存
   simpleExecutor类（继承baseExecutor）
-  
+    默认Executor
+    最简单的执行器，每次查询的时候都会进行一次预编译（PrepareStatement）。
   batchExecutor类（继承baseExecutor）
-  
+    批量执行器，查询操作类似simpleExecutor，每次都会进行预编译。
+    更新或插入时会批量进行，需要手动提交
   reuseExecutor类（继承baseExecutor）
-  
-  
+    区别于simpleExecutor，每次查询时会把PrepareStatement存起来，方便后续重用。
+  *CachingExecutor  
+    用于处理二级缓存的执行器，用到了装饰器模式，装饰了baseExecutor。
+7.mybatis的一二级缓存
+  一级缓存
+    单个会话（sqlsession）共享
+    存在于baseExecutor中
+    https://www.cnblogs.com/51life/p/9523926.html
+  二级缓存
+    多个SqlSession在同一个Mapper文件中共享的缓存
+    存在于CachingExecutor中
+    https://www.cnblogs.com/51life/p/9529409.html
