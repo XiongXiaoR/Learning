@@ -1,5 +1,10 @@
 1.数据结构
   String：
+    int：8个字节的长整型。字符串值是整型时，这个值使用long整型表示。
+    embstr：<=39字节的字符串。embstr与raw都使用redisObject和sds保存数据，区别在于，embstr的使用只分配一次内存空间（因此redisObject和sds是连续的），而raw需要分配两次内存空间（分别为redisObject和sds分配空间）。因此与raw相比，embstr的好处在于创建时少分配一次空间，删除时少释放一次空间，以及对象的所有数据连在一起，寻找方便。而embstr的坏处也很明显，如果字符串的长度增加需要重新分配内存时，整个redisObject和sds都需要重新分配空间，因此redis中的embstr实现为只读。
+    raw：大于39个字节的字符串
+    关于39的界限问题：
+      redisObject--16字节，SDS--9+字符串长度，64-16-9=39
     SDS（simple dynamic string，简单动态字符串）
     struct sdshdr{
        //记录buf数组中已使用字节的数量
@@ -17,6 +22,7 @@
     b.惰性空间释放：每次缩短的时候不会立马回收内存，而是使用free属性将这些字节的数量记录下来，等待后续使用。
   List：
     双向链表或者压缩列表（当一个列表键（list）只包含少量的列表项，并且每个列表项都是小整数值，或者长度比较短的字符串，那么 Redis 就会使用压缩列表作为列表键（list）的底层实现）
+    元素数量小于512个；列表中所有字符串对象都不足64字节；
     压缩列表：
       typedf struct ziplist<T>{
           //压缩列表占用字符数
