@@ -1,0 +1,22 @@
+feign
+--生成@feignclient修饰的接口的动态代理
+	代理实现InvocationHandler 调用处理器接口，在调用时执行invoke方法
+		常见实现（FeignInvocationHandler 、HystrixInvocationHandler ）
+
+--FeignInvocationHandler
+	定义一个map，映射method -> methodHandler
+	执行invoke方法时根据method找到对应的methodHandler执行其对应的invoke方法
+	该方法主要职责就是完成远程URL请求
+	实现类SynchronousMethodHandler
+	
+--SynchronousMethodHandler
+	首先通过 RequestTemplate 请求模板实例，生成远程URL请求实例 request
+	在根据feign对应的client成员执行excute获取response
+	在对response解码
+	client负责执行请求，内部只有一个excute方法。
+	常见实现（Default、
+			ApacheHttpClient 、
+			OkHttpClient、
+			LoadBalancerFeignClient 
+	）
+	
