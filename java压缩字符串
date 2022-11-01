@@ -1,0 +1,42 @@
+public static String fun (String input) {
+        if (input == null && ("").equals(input)){
+            return "";
+        } else {
+            char[] chars = input.toCharArray();
+            int i = 0,j = 0,index = 0,count = 0;
+            while (j < chars.length) {
+                if (chars[i] != chars[j]) {
+                    if (count > 1){
+                        String countString = String.valueOf(count);
+                        char[] countChar = countString.toCharArray();
+                        chars[index + countChar.length] = chars[i];
+                        for (char c : countChar) {
+                            chars[index++] = c;
+                        }
+                        index++;
+
+                    } else if (count == 1) {
+                        chars[index++] = chars[i];
+                    }
+                    i = j;
+                    count = 0;
+                } else {
+                    count++;
+                    j++;
+                }
+            }
+            if (i != j){
+                if (count > 1){
+                    String countString = String.valueOf(count);
+                    char[] countChar = countString.toCharArray();
+                    chars[index + countChar.length] = chars[i];
+                    for (char c : countChar) {
+                        chars[index++] = c;
+                    }
+                } else {
+                    chars[index++] = chars[i];
+                }
+            }
+            return String.copyValueOf(chars).substring(0, index);
+        }
+    }
